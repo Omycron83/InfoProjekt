@@ -1,0 +1,9 @@
+import hyperparmeter_optimization
+from skopt.space import Real, Integer
+import xgboost
+
+class XGBoostAutoRegr:
+    def __init__(self) -> None:
+        opt_hyperparams = []
+    def optimize_xgboost(features, labels):
+        return hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 8192), Real(0, 0.9999), Integer(1, 128), Real(0.0001, 0.1), Real(0, 20)], xgboost, )
