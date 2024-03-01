@@ -56,4 +56,5 @@ class polynomial_regression(linear_regression):
         features = self.polynomialize(features)
         features = (features - self.mean) / self.std
         return super().predict(features)
+        
     def optimize_polyregr(features, labels):
