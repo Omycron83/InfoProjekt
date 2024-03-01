@@ -1,10 +1,33 @@
 import sqlite3
 import numpy as np
 from tokenize import Name
+import io
+
+def adapt_array(arr):
+    """
+    http://stackoverflow.com/a/31312102/190597 (SoulNibbler)
+    """
+    out = io.BytesIO()
+    np.save(out, arr)
+    out.seek(0)
+    return sqlite3.Binary(out.read())
+
+def convert_array(text):
+    out = io.BytesIO(text)
+    out.seek(0)
+    return np.load(out)
+
+
+# Converts np.array to TEXT when inserting
+sqlite3.register_adapter(np.ndarray, adapt_array)
+
+# Converts TEXT to np.array when selecting
+sqlite3.register_converter("array", convert_array)
+
 
 class Datenbanken:
     def __init__(self,name) -> None:
-        self.__connection = sqlite3.connect(name)
+        self.__connection = sqlite3.connect(name, detect_types=sqlite3.PARSE_DECLTYPES)
         self.__cursor = self.__connection.cursor()
     def Datenbankwechsel(self,name):
         nameaslist = [name]
@@ -12,13 +35,13 @@ class Datenbanken:
         if res.fetchone() is None:
             return("Diese Datenbank existiert noch nicht")
         else:
-            self.__connection = sqlite3.connect(name)
+            self.__connection = sqlite3.connect(name, detect_types=sqlite3.PARSE_DECLTYPES)
             self.__cursor = self.__connection.cursor()
     def DatenbankErstellen(self,name):
         nameaslist = [name]
         res = self.__cursor.execute("SELECT name FROM sqlite_master WHERE name=?", nameaslist)
         if res.fetchone() is None:
-            self.__connection = sqlite3.connect(name)
+            self.__connection = sqlite3.connect(name, detect_types=sqlite3.PARSE_DECLTYPES)
             self.__cursor = self.__connection.cursor()
         else:
             return("Diese Datenbank existiert schon")
@@ -78,7 +101,7 @@ print(d.ListeTabellen())
 d.TabellenErstellen("bitches", ["hello","nuhuh","fuckyou"])
 print(d.ListeTabellen())
 d.TabellenInsert("bitches",["suck","ma","aick"])
-d.TabelleUpdaten("bitches",["fuckyou","nuhuh"],[np.array([5]),"Ich Funktioniere"],["fuckyou","hello"],[">=","="],["7","suck"])
+d.TabelleUpdaten("bitches",["fuckyou","nuhuh"],[np.array([5,3]),"Ich Funktioniere"],["fuckyou","hello"],[">=","="],["7","suck"])
 print(d.ListeTabellen())
-print(d.Tabelleabrufen("bitches","fuckyou")) 
+print(d.Tabelleabrufen("bitches","hello")) 
 d.TabellusDeletius("bitches")
