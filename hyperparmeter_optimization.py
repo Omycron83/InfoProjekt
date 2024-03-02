@@ -1,7 +1,7 @@
 import numpy as np
 from skopt import gp_minimize
 
-def k_fold_cross_val(k, features, labels, train_func, pred_func, cost_func, seed):
+def k_fold_cross_val(k, features, labels, train_func, pred_func, cost_func, seed = 0):
     #Shuffling
     np.random.seed(seed)
     p = np.random.permutation(features.shape[0])
