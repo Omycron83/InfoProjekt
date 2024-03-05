@@ -17,7 +17,6 @@ def convert_array(text):
     out.seek(0)
     return np.load(out)
 
-
 # Converts np.array to TEXT when inserting
 sqlite3.register_adapter(np.ndarray, adapt_array)
 
