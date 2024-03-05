@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analysis Website</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            text-align: center;
+            background-color: #f0f5f9;
+            color: #333;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        button, input, label {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #3f577c;
+            color: #fff;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #32465a;
+        }
+
+        input {
+            padding: 8px;
+            border: 1px solid #95a7bb;
+            border-radius: 4px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #3f577c;
+        }
+
+        #uploadSection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #uploadSection input {
+            width: 60%;
+        }
+
+        #subButtonsSection, #subSubButtonsSection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #subButtonsSection button, #subSubButtonsSection button {
+            width: 45%;
+            background-color: #3f577c;
+            color: #fff;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        #subButtonsSection button:hover, #subSubButtonsSection button:hover {
+            background-color: #32465a;
+        }
+
+        #loadingScreen, #analysisResult {
+            margin-top: 20px;
+        }
+
+        #titleScreen, #functionalPage, #loadingPage, #resultPage {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #titleScreen h1 {
+            color: #3f577c;
+        }
+
+        #titleScreen p {
+            color: #333;
+        }
+
+        #functionalPage h2, #loadingPage h2, #resultPage h2 {
+            color: #3f577c;
+        }
+
+        #resultPage p {
+            color: #555;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .hide-button {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Title Screen -->
+    <section id="titleScreen">
+        <h1>Data Analysis Website</h1>
+        <p>Welcome to our Data Analysis platform! Whether you're looking to predict future trends, analyze known data, or explore patterns, we've got you covered. Choose the option that best suits your needs and let the analysis begin!</p>
+        <button onclick="showFunctionalPage()">Get Started</button>
+    </section>
+
+    <!-- Functional Page -->
+    <section id="functionalPage" class="hide">
+        <!-- Upload Section -->
+        <section id="uploadSection">
+            <label for="fileInput">Upload a File:</label>
+            <input type="file" id="fileInput" accept=".csv, .xlsx">
+        </section>
+
+        <h2>What kind of problem are you facing?</h2>
+        <button data-id="timeSeries" onclick="showSubButtons('timeSeries')">Predict Future Time-Series</button>
+        <button data-id="knownData" onclick="showSubButtons('knownData')">Predict Value from Known Data</button>
+        <button data-id="findPatterns" onclick="showSubButtons('findPatterns')">Find Patterns in Data</button>
+        <button data-id="experimental" onclick="showSubButtons('experimental')">Experimental: Find Optimal Action in Environment</button>
+
+        <!-- Sub Buttons -->
+        <section id="subButtonsSection" class="hide"></section>
+
+        <!-- SubSub Buttons -->
+        <section id="subSubButtonsSection" class="hide"></section>
+
+        <!-- Loading Screen -->
+        <section id="loadingScreen" class="hide">
+            <h2>Loading...</h2>
+        </section>
+
+        <!-- Analysis Result -->
+        <section id="analysisResult" class="hide">
+            <h2>Analysis Result</h2>
+            <button onclick="downloadAnalysis()">Download Analysis as PDF</button>
+        </section>
+    </section>
+
+    <!-- Loading Page -->
+    <section id="loadingPage" class="hide">
+        <h2>Loading...</h2>
+    </section>
+
+    <!-- Result Page -->
+    <section id="resultPage" class="hide">
+        <h2>Analysis Result</h2>
+        <!-- Result content will be dynamically populated here using JavaScript -->
+        <button onclick="downloadAnalysis()">Download Analysis as PDF</button>
+    </section>
+
+    <script>
+        function showFunctionalPage() {
+            document.getElementById('titleScreen').style.display = 'none';
+            document.getElementById('functionalPage').style.display = 'block';
+        }
+
+        function showSubButtons(mainButton) {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('analysisResult').style.display = 'none';
+
+            let subButtons = ["timeSeries", "knownData", "findPatterns", "experimental"];
+            subButtons.splice(subButtons.indexOf(mainButton), 1);
+
+            const functionalPage = document.getElementById('functionalPage');
+            const subButtonsSection = document.getElementById('subButtonsSection');
+
+            for (const subButton of subButtons) {
+                const buttonElement = functionalPage.querySelector(`button[data-id="${subButton}"]`);
+                buttonElement.classList.add('hide-button');
+            }
+
+            subButtonsSection.innerHTML = '';
+
+            switch (mainButton) {
+                case 'timeSeries':
+                    subButtonsSection.innerHTML = `
+                        <label>How many variables does your time-series have?</label>
+                        <input type="number" id="numVariablesInput" min="1" required>
+                        <button onclick="showLoadingScreen('Number Input')">Next</button>
+                    `;
+                    break;
+                case 'knownData':
+                    subButtonsSection.innerHTML = `
+                        <button onclick="showSubSubButtons('Structured')">Structured</button>
+                        <button onclick="showSubSubButtons('Unstructured')">Unstructured</button>
+                    `;
+                    break;
+                case 'findPatterns':
+                    subButtonsSection.innerHTML = `
+                        <button onclick="showSubSubButtons('Information condensation')">Information Condensation</button>
+                        <button onclick="showSubSubButtons('Clustering')">Clustering</button>
+                        <button onclick="showSubSubButtons('Outlier analysis')">Outlier Analysis</button>
+                    `;
+                    break;
+                case 'experimental':
+                    subButtonsSection.innerHTML = `
+                        <button onclick="showLoadingScreen('Experimental Sub-Button 1')">Experimental Sub-Button 1</button>
+                        <button onclick="showLoadingScreen('Experimental Sub-Button 2')">Experimental Sub-Button 2</button>
+                    `;
+                    break;
+            }
+
+            subButtonsSection.classList.remove('hide');
+        }
+
+        function showSubSubButtons(subButton) {
+            document.getElementById('subButtonsSection').style.display = 'none';
+
+            let subSubButtons = [];
+
+            switch (subButton) {
+                case 'Structured':
+                    subSubButtons = ["Classification", "Regression"];
+                    break;
+                case 'Unstructured':
+                    subSubButtons = ["How is the ratio between your datapoints and feature variables?"];
+                    break;
+                case 'Information condensation':
+                case 'Clustering':
+                case 'Outlier analysis':
+                    showLoadingScreen(subButton);
+                    return;
+            }
+
+            const subSubButtonsSection = document.getElementById('subSubButtonsSection');
+            subSubButtonsSection.innerHTML = '';
+
+            for (const subSubButton of subSubButtons) {
+                subSubButtonsSection.innerHTML += `<button onclick="showLoadingScreen('${subSubButton}')">${subSubButton}</button>`;
+            }
+
+            subSubButtonsSection.classList.remove('hide');
+        }
+
+        function showLoadingScreen(actionTrigger) {
+            document.getElementById('subButtonsSection').style.display = 'none';
+            document.getElementById('subSubButtonsSection').style.display = 'none';
+            document.getElementById('functionalPage').style.display = 'none';
+            document.getElementById('loadingPage').style.display = 'block';
+
+            setTimeout(() => {
+                showAnalysisResult(actionTrigger);
+            }, 2000);
+        }
+
+        function showAnalysisResult(actionTrigger) {
+            document.getElementById('loadingPage').style.display = 'none';
+            document.getElementById('resultPage').style.display = 'block';
+
+            const resultPage = document.getElementById('resultPage');
+            resultPage.innerHTML = `<h2>${actionTrigger} Analysis Result</h2><p>Lorem ipsum analysis result...</p>`;
+        }
+
+        function downloadAnalysis() {
+            alert('Downloading analysis as PDF...');
+        }
+    </script>
+</body>
+</html>
+
