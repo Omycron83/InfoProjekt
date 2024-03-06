@@ -17,4 +17,3 @@ class outlier_filtering:
         id_grenzwert = np.where(quantiles > self.Grenzwert)[0]
 
         return data[id_grenzwert, :], np.delete(data, id_grenzwert, axis = 0)
-

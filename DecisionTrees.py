@@ -37,3 +37,8 @@ class DecisionTreeAutoClass(supervised.OptimizerRegr):
         self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 50), Integer(2, 20), Integer(1, 16), Real(0.1, 1.0)], DecisionTreeClass, self.cost, n_calls=100, features=features, labels=labels)
         self.model = DecisionTreeClass(self.opt_hyperparams)
         self.train(features, labels)
+
+x = np.ones((100, 2))
+y = np.zeros((100, 1))
+
+g = DecisionTreeAutoRegr(x, y)

@@ -12,6 +12,6 @@ def result():
         button_pressed = request.form.get('button_pressed', False)
         return render_template('result.html', button_pressed=button_pressed)
 
-
 if __name__ == "__main__":
     app.run()
+    #app.route

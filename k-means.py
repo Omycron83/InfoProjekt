@@ -4,7 +4,7 @@ from random import choice
 class KMeansClustering:
     def __init__(self, k, data) -> None:
         self.threshhold = 1e-6
-        self.means = data[np.random.choice(len(X), k, replace=False), :]
+        self.means = data[np.random.choice(len(data), k, replace=False), :]
         self.get_means(data)
 
     def get_labels(self, data):
