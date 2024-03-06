@@ -1,6 +1,7 @@
 import hyperparmeter_optimization
 from skopt.space import Real, Integer
 import numpy as np
+import supervised
 
 """
 Parameters: params[0] = degree, params[1] = lambda
@@ -62,9 +63,6 @@ class PolynomialRegr(linear_regression):
         self.std[self.std == 0] = 0.001
         features = (features - self.mean) / self.std
         return super().ridge_normal_eq(features, labels)
-    
-    def MSE(self, features, labels):
-        return np.sum(np.square(self.predict(features) - labels)) / (2 * np.array(labels).size)
 
     def train(self, features, labels):
         self.ridge_normal_eq(features, labels)
@@ -74,23 +72,9 @@ class PolynomialRegr(linear_regression):
         features = (features - self.mean) / self.std
         return super().predict(features)
 
-class PolynomialRegrAuto:
-    def __init__(self, features, labels) -> None:
-        self.train_features = features
-        self.train_labels = labels
-        self.optimize_polyregr(features, labels)
-        
-    def train_polyregr(self, features, labels):
-        self.model.ridge_normal_eq(features, labels)
-
+class PolynomialRegrAuto(supervised.OptimizerRegr):
     def optimize_polyregr(self, features, labels):
-        self.train_features, self.train_labels = features, labels
-        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 20), Real(0, 40)], PolynomialRegr, MSE, n_calls=100, features=features, labels=labels)
+        super().optim(features, labels)
+        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 20), Real(0, 40)], PolynomialRegr, self.cost, n_calls=100, features=features, labels=labels)
         self.model = PolynomialRegr(self.opt_hyperparams, dim_features = features.shape[1], dim_labels = labels.shape[1])
-        self.train_polyregr(features, labels)
-
-    def pred(self, new_features):
-        return self.model.predict(new_features)
-
-    def cost(self, features, labels):
-        return MSE(self.pred(features), labels)
+        self.train(features, labels)
