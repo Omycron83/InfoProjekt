@@ -17,7 +17,7 @@ def k_fold_cross_val(k, features, labels, train_func, pred_func, cost_func, seed
         train_labels = np.vstack((shuffled_labels[:features.shape[0] // k * l, :], shuffled_labels[features.shape[0] // k * (l+1):, :])) 
         #Now, train the model on the current fold
         train_func(train_features, train_labels)
-        error += cost_func(pred_func(test_features), test_labels) / k
+        error += cost_func(pred_func(test_features).reshape(test_labels.shape), test_labels) / k
 
     #For the last fold, we dont really know the size of the holdout-set (we dont know about the divisibility of the amount of datapoints by k) so we do this seperately
     #The test data of the last fold 
@@ -31,10 +31,15 @@ def k_fold_cross_val(k, features, labels, train_func, pred_func, cost_func, seed
     error += cost_func(pred_func(test_features), test_labels) / k
     return error
 
-def find_opt_hyperparameters(parameter_ranges, cost, n_calls, features, labels):
+def find_opt_hyperparameters(parameter_ranges, Model, is_classifier, n_calls, features, labels):
     def model_eval(params):
-        model = model(params, dim_features = features.dim[1], dim_labels = labels.dim[1])
+        model = Model(params, dim_features = features.shape[1], dim_labels = labels.shape[1])
         train_func = model.train
         pred_func = model.predict
-        return k_fold_cross_val(10, features, labels, train_func, pred_func, cost)
+        if not is_classifier:
+            cost = model.MSE
+        else:
+            cost = model.Log
+        return k_fold_cross_val(5, features, labels, train_func, pred_func, cost)
+    np.int = int
     return gp_minimize(model_eval, parameter_ranges, n_calls = n_calls)

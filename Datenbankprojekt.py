@@ -2,6 +2,12 @@ import sqlite3
 import numpy as np
 from tokenize import Name
 import io
+import pickle
+from DecisionTrees import DecisionTreeAutoClass, DecisionTreeAutoRegr
+from LinRegr import PolynomialRegrAuto
+from LogRegr import LogisticAutoClass
+from RandomForests import RandomForestAutoClass, RandomForestAutoRegr
+from XGBoost import XGBoostAutoClass, XGBoostAutoRegr
 
 def adapt_array(arr):
     """
@@ -22,6 +28,20 @@ sqlite3.register_adapter(np.ndarray, adapt_array)
 
 # Converts TEXT to np.array when selecting
 sqlite3.register_converter("array", convert_array)
+
+def adapt(a):
+    return pickle.dumps(a)
+
+sqlite3.register_adapter(DecisionTreeAutoRegr, adapt)
+sqlite3.register_adapter(DecisionTreeAutoClass, adapt)
+sqlite3.register_adapter(PolynomialRegrAuto, adapt)
+sqlite3.register_adapter(LogisticAutoClass, adapt)
+sqlite3.register_adapter(RandomForestAutoRegr, adapt)
+sqlite3.register_adapter(RandomForestAutoClass, adapt)
+sqlite3.register_adapter(XGBoostAutoRegr, adapt)
+sqlite3.register_adapter(XGBoostAutoClass, adapt)
+
+sqlite3.register_converter("Damianstuff", pickle.loads)
 
 #Erzeugt eine Klasse definiert folgend:
 class Datenbanken:

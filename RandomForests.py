@@ -37,3 +37,13 @@ class RandomForestAutoClass(supervised.OptimizerClass):
         self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(10, 1000), Integer(1, 50), Integer(2, 100), Integer(1, 100)], RandomForestClassifier, self.cost, n_calls=100, features=features, labels=labels)
         self.model = RandomForestClassifier(self.opt_hyperparams)
         self.train(features, labels)
+
+def unit_test():
+    f, l = np.zeros(5, 3), np.zeros(5, 1)
+    _class = DecisionTreeAutoClass(f, l)
+    print(_class.pred(f), _class.cost(f, l))
+    regr = DecisionTreeAutoRegr(f, l)
+    print(regr.pred(f), _class.cost(f, l))
+
+if __name__ == '__main__':
+    unit_test()
