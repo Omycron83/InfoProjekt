@@ -84,6 +84,7 @@ class PolynomialRegrAuto:
         self.model.ridge_normal_eq(features, labels)
 
     def optimize_polyregr(self, features, labels):
+        self.train_features, self.train_labels = features, labels
         self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 20), Real(0, 40)], PolynomialRegr, MSE, n_calls=100, features=features, labels=labels)
         self.model = PolynomialRegr(self.opt_hyperparams, dim_features = features.shape[1], dim_labels = labels.shape[1])
         self.train_polyregr(features, labels)

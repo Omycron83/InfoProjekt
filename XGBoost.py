@@ -32,6 +32,7 @@ class XGBoostAutoRegr:
         self.model.train(features, labels)
 
     def optimize_xgboost(self, features, labels):
+        self.train_features, self.train_labels = features, labels 
         self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 8192), Real(0, 0.9999), Integer(1, 128), Real(0.0001, 0.1), Real(0, 20)], XGBoostRegr, MSE, n_calls=100, features=features, labels=labels)
         self.model = XGBoostRegr(self.opt_hyperparams)
         self.train_xgboost(features, labels)
@@ -49,12 +50,12 @@ XGBoostClass: Base-class for facilitating the model itself
 XGBoostAutoClass: Class providing a higher-level mask that facilitates the model search and the prediction
 """
 
-def MSE(pred, Y):
+def logistic_cost(pred, Y):
     return np.sum(-pred * np.log2(Y + (Y == 0)*0.0001) - (1-pred) * np.log2(1 - Y + (Y == 1)*0.0001)) / pred.shape[0]
 
 class XGBoostClass:
     def __init__(self, params, dim_features = None, dim_labels = None) -> None:
-        self.xgboost_reg = xgboost.XGBClassifier(gamma = params[0], learning_rate = params[1], max_depth = params[2], n_estimators = params[3], n_jobs = 16, objective = 'binary:logistic', subsample = params[4], scale_pos_weight = 0, reg_alpha = params[6], reg_lambda = params[7], min_child_weight = params[5])
+        self.xgboost_class = xgboost.XGBClassifier(gamma = params[0], learning_rate = params[1], max_depth = params[2], n_estimators = params[3], n_jobs = 16, objective = 'binary:logistic', subsample = params[4], scale_pos_weight = 0, reg_alpha = params[6], reg_lambda = params[7], min_child_weight = params[5])
 
     def train(self, features, labels):
         self.xgboost_class.fit(features, labels)
@@ -71,6 +72,7 @@ class XGBoostAutoClass:
         self.model.train(features, labels)
 
     def optimize_xgboost(self, features, labels):
+        self.train_features, self.train_labels = features, labels
         self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 8192), Real(0, 0.9999), Integer(1, 128), Real(0.0001, 0.1), Real(0, 20)], XGBoostRegr, MSE, n_calls=100, features=features, labels=labels)
         self.model = XGBoostRegr(self.opt_hyperparams)
         self.train_xgboost(features, labels)
@@ -79,4 +81,4 @@ class XGBoostAutoClass:
         return self.model.predict(new_features)
     
     def cost(self, features, labels):
-        return MSE(self.pred(features), labels)
+        return logistic_cost(self.pred(features), labels)
