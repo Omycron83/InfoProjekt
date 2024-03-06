@@ -31,8 +31,10 @@ def k_fold_cross_val(k, features, labels, train_func, pred_func, cost_func, seed
     error += cost_func(pred_func(test_features), test_labels) / k
     return error
 
-def find_opt_hyperparameters(parameter_ranges, train_func, cost_func, cost, n_calls, features, labels):
+def find_opt_hyperparameters(parameter_ranges, cost, n_calls, features, labels):
     def model_eval(params):
-        model = model(params, features.dim[1], labels.dim[1])
-        return k_fold_cross_val(10, features, labels, train_func, cost_func, cost)
+        model = model(params, dim_features = features.dim[1], dim_labels = labels.dim[1])
+        train_func = model.train
+        pred_func = model.predict
+        return k_fold_cross_val(10, features, labels, train_func, pred_func, cost)
     return gp_minimize(model_eval, parameter_ranges, n_calls = n_calls)
