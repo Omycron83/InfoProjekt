@@ -47,7 +47,7 @@ sqlite3.register_converter("Damianstuff", pickle.loads)
 class Datenbanken:
     #Starte die Klasse mit dem namen der Datenbank
     def __init__(self,name) -> None:
-        self.__connection = sqlite3.connect(name, detect_types=sqlite3.PARSE_DECLTYPES)
+        self.__connection = sqlite3.connect("database/"+ name, detect_types=sqlite3.PARSE_DECLTYPES)
         self.__cursor = self.__connection.cursor()
     #Wechsle zu einer anderen Datenbank (Anderer File) (Datenbank muss existieren sonst fehler meldung)
     def Datenbankwechsel(self,name):
@@ -56,14 +56,14 @@ class Datenbanken:
         if res.fetchone() is None:
             return("Diese Datenbank existiert noch nicht")
         else:
-            self.__connection = sqlite3.connect(name, detect_types=sqlite3.PARSE_DECLTYPES)
+            self.__connection = sqlite3.connect("database/"+name, detect_types=sqlite3.PARSE_DECLTYPES)
             self.__cursor = self.__connection.cursor()
     #Erstelle eine Datenbank falls sie noch nicht existiert sonst fehlermeldung
     def DatenbankErstellen(self,name):
         nameaslist = [name]
         res = self.__cursor.execute("SELECT name FROM sqlite_master WHERE name=?", nameaslist)
         if res.fetchone() is None:
-            self.__connection = sqlite3.connect(name, detect_types=sqlite3.PARSE_DECLTYPES)
+            self.__connection = sqlite3.connect("database/"+name, detect_types=sqlite3.PARSE_DECLTYPES)
             self.__cursor = self.__connection.cursor()
         else:
             return("Diese Datenbank existiert schon")

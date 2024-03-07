@@ -11,18 +11,19 @@ from PCA import PCA
 from RandomForests import RandomForestAutoClass, RandomForestAutoRegr
 from XGBoost import XGBoostAutoClass, XGBoostAutoRegr
 import os
+import pandas as pd
 
 #Setting up the application
 app = Flask(__name__)
-#
-manager = Datenbankprojekt.Datenbanken("Databank-Manager")
-manager.DatenbankErstellen("Datenbank")
-manager.TabellenErstellen("HauptTabelle",[["ProjectName",""],["DataArray","array"],["LabelArray","array"]])
-manager.TabellenErstellen("ModelStructured_Classification",[["ProjectName",""],["model","Damianstuff"]])
-manager.TabellenErstellen("ModelStructured_Regression",[["ProjectName",""],["model","Damianstuff"]])
-manager.TabellenErstellen("ModelUnstructured_Regression",[["ProjectName",""],["model","Damianstuff"]])
-manager.TabellenErstellen("ModelUnstructured_Classification",[["ProjectName",""],["model","Damianstuff"]])
 
+class User:
+    def __init__(self, name) -> None:
+        self.manager = Datenbankprojekt.Datenbanken(name)
+        self.manager.TabellenErstellen("HauptTabelle",[["ProjectName",""],["DataArray","array"],["LabelArray","array"]])
+        self.manager.TabellenErstellen("ModelStructured_Classification",[["ProjectName",""],["model","Damianstuff"]])
+        self.manager.TabellenErstellen("ModelStructured_Regression",[["ProjectName",""],["model","Damianstuff"]])
+        self.manager.TabellenErstellen("ModelUnstructured_Regression",[["ProjectName",""],["model","Damianstuff"]])
+        self.manager.TabellenErstellen("ModelUnstructured_Classification",[["ProjectName",""],["model","Damianstuff"]])
 
 UPLOAD_FOLDER = 'UPLOAD_FOLDER'
 ALLOWED_EXTENSIONS = {'csv'}
@@ -31,18 +32,24 @@ from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def hello_world():  # put application's code here
     if request.method == 'POST':
         username = request.form['username']
-        print(username)
+        #(If its no there already) creates a datenbank for that specific user
+        global user
+        user = User(username)
+        #print(username)
         return redirect('/home')
     return render_template('index.html')
 
 
 @app.route('/home')
 def home():
-    return render_template('home.html', datasets=["airplane", "automobile", "bird", "cat"])
+    global user
+    datasets = user.manager.VonTabelleGebealle("HauptTabelle", ["ProjektName"], "Projektname")
+    return render_template('home.html', datasets=datasets)
 
 
 @app.route('/download/<name>')
@@ -64,6 +71,7 @@ def create():
 
 @app.route('/preparation', methods=['GET', 'POST'])
 def prepare_data():
+    global user
     if request.method == 'POST':
         check = lambda key: key in request.form and request.form[key] == 'on'
         selected_typ = ''
@@ -71,6 +79,23 @@ def prepare_data():
             if check(typ):
                 selected_typ = typ
                 break
+        files = pd.read_csv(request.files).to_numpy()
+
+        if selected_typ == 'condensation':
+            new_data = PCA(files)
+
+        if selected_typ == 'clustering':
+            new_data = KMeansClustering(10, files)
+
+        if selected_typ == 'imputation-mean':
+            AutoFillModel = autofill.AutoFill()
+            new_data = AutoFillModel.mean_imputation(files)
+
+        if selected_typ == 'imputation-knn':
+            AutoFillModel = autofill.AutoFill()
+            new_data = AutoFillModel.k_nn_imputation(files)
+
+        user.manager.TabelleUpdaten()
         print(selected_typ)
         print(request.files)
         if 'skip' in request.form and request.form['skip'] == 'on':
@@ -81,6 +106,7 @@ def prepare_data():
 
 @app.route('/unsupervised', methods=['GET', 'POST'])
 def unsupervised():
+    global user
     if request.method == 'POST':
         structured = 'structured' in request.form and request.form['structured'] == 'on'
         print(structured)
@@ -98,6 +124,7 @@ def unsupervised():
 
 @app.route('/predict/<name>', methods=['GET', 'POST'])
 def predict(name):
+    global user
     if request.method == 'POST':
         print(request.files)
         # DO DOWNLOAD
