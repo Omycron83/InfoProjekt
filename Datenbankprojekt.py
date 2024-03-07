@@ -122,6 +122,15 @@ class Datenbanken:
     def Tabelleabrufen(self,name,sortierung):
         return(self.__cursor.execute("SELECT * FROM "+name+" ORDER BY "+sortierung).fetchall())
     #Gebe die angegeben collums aller zeilen aus die die bedingungen erfüllen
+    def VonTabelleGebealle(self,name,collums,sortierung):
+        string = "SELECT "
+        for k in collums:
+            string = string +k +" , "
+        string = string[:-2]
+        string = string+"FROM "+name
+        string = string+" ORDER BY "+sortierung
+        return(self.__cursor.execute(string,bedingungen).fetchall())
+    #Gebe die angegeben collums aller zeilen aus die die bedingungen erfüllen
     def VonTabelleGebe(self,name,collums,sortierung,bedinungscollums,bedingungszeichen,bedingungen):
         string = "SELECT "
         for k in collums:
