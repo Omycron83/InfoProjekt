@@ -129,7 +129,7 @@ class Datenbanken:
         string = string[:-2]
         string = string+"FROM "+name
         string = string+" ORDER BY "+sortierung
-        return(self.__cursor.execute(string,bedingungen).fetchall())
+        return(self.__cursor.execute(string).fetchall())
     #Gebe die angegeben collums aller zeilen aus die die bedingungen erfüllen
     def VonTabelleGebe(self,name,collums,sortierung,bedinungscollums,bedingungszeichen,bedingungen):
         string = "SELECT "
