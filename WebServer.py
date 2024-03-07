@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import Datenbankprojekt
 import autofill
 from DecisionTrees import DecisionTreeAutoRegr,DecisionTreeAutoClass
@@ -10,7 +10,7 @@ import outlier
 from PCA import PCA
 from RandomForests import RandomForestAutoClass, RandomForestAutoRegr
 from XGBoost import XGBoostAutoClass, XGBoostAutoRegr
-
+import os
 app = Flask(__name__)
 manager = Datenbankprojekt.Datenbanken("Databank-Manager")
 manager.DatenbankErstellen("Datenbank")
@@ -166,6 +166,22 @@ def predict_reconfigure_download():
 
 @app.route('/existing/pred')
 def existing_predict():
+    if manager.VonTabelleGebe("ModelStructured_Classification",["model"],"model",["ProjectName"],["=="],["Hello World"]) != []:
+        ModelStructured_Classification = VonTabelleGebe("ModelStructured_Classification",["model"],"model",["ProjectName"],["=="],["Hello World"])[0]
+    else:
+        ModelStructured_Classification = None
+    if manager.VonTabelleGebe("ModelStructured_Regression",["model"],"model",["ProjectName"],["=="],["Hello World"]) != []:
+        ModelStructured_Regression = VonTabelleGebe("ModelStructured_Regression",["model"],"model",["ProjectName"],["=="],["Hello World"])[0]
+    else:
+        ModelStructured_Regression = None
+    if manager.VonTabelleGebe("ModelUnstructured_Regression",["model"],"model",["ProjectName"],["=="],["Hello World"]) != []:
+        ModelUnstructured_Regression = VonTabelleGebe("ModelUnstructured_Regression",["model"],"model",["ProjectName"],["=="],["Hello World"])[0]
+    else:
+        ModelUnstructured_Regression = None
+    if manager.VonTabelleGebe("ModelUnstructured_Classification",["model"],"model",["ProjectName"],["=="],["Hello World"]) != []:
+        ModelUnstructured_Classification = VonTabelleGebe("ModelUnstructured_Classification",["model"],"model",["ProjectName"],["=="],["Hello World"])[0]
+    else:
+        ModelUnstructured_Classification = None
     OptimModel = ...
     if OptimModel.isinstance(XGBoostAutoClass) or OptimModel.isinstance(RandomForestAutoClass) or OptimModel.isinstance(LogisticAutoClass) or OptimModel.isinstance(DecisionTreeAutoClass) or OptimModel.isinstance(NeuralNetworkAutoClass):
         prediction = ...
@@ -178,8 +194,10 @@ def existing_predict():
 def existing_configure():
     pass
 
-@app.route('/existing/download')
-def existing_download():
+@app.route('/existing/<path:filename>', methods=['GET', 'POST'])
+def existing_download(filename):
+    uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+    return send_from_directory(uploads, filename)
     pass
 
 @app.route('/result', methods=['POST'])
