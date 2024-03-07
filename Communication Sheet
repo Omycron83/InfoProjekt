@@ -1,0 +1,20 @@
+/
+Pull -> template: index.html
+
+/download?name=<name>
+Pull -> Download Dataset
+
+/create
+Pull -> template: create.html
+
+/prepare-data
+Pull -> template: prepare-data.html
+Push -> Informationen folgen (u.a. Datei, Typ, Redirect target)
+
+/unsupervised
+Pull -> template: unsupervised.html
+Push -> Informationen folgen (u.a. Datei, info) -> redirect to /
+
+/prediction
+Pull -> template: prediction.html
+Push -> informationen folgen (u.a. Datei)
