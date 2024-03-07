@@ -12,10 +12,13 @@ from RandomForests import RandomForestAutoClass, RandomForestAutoRegr
 from XGBoost import XGBoostAutoClass, XGBoostAutoRegr
 
 app = Flask(__name__)
-manager = Datenbankprojekt("Databank-Manager")
-manager.DatenbankErstellen("Modelle")
-
-manager.DatenbankErstellen("Datensaetze")
+manager = Datenbankprojekt.Datenbanken("Databank-Manager")
+manager.DatenbankErstellen("Datenbank")
+manager.TabellenErstellen("HauptTabelle",[["ProjectName",""],["DataArray","array"],["LabelArray","array"]])
+manager.TabellenErstellen("ModelStructured_Classification",[["ProjectName",""],["model","Damianstuff"]])
+manager.TabellenErstellen("ModelStructured_Regression",[["ProjectName",""],["model","Damianstuff"]])
+manager.TabellenErstellen("ModelUnstructured_Regression",[["ProjectName",""],["model","Damianstuff"]])
+manager.TabellenErstellen("ModelUnstructured_Classification",[["ProjectName",""],["model","Damianstuff"]])
 #Decision to either decide on new or existing
 @app.route('/')
 def home():
@@ -35,42 +38,42 @@ def structured():
 
 @app.route('/supervised/structured/classification')
 def structured_classification():
-    data, labels = ...
+    data, labels = manager.VonTabelleGebe("HauptTabelle",["DataArray","LabelArray"],"DataArray",["ProjectName"],["=="],["Hello World"])[0]
     #Tree model for classification
     Models = [RandomForestAutoClass(data, labels), XGBoostAutoClass(data, labels), DecisionTreeAutoClass(data, labels)]
     Models.sort(key= lambda x: x.cost(data, labels))
     Model = Models[0]
-    save the model
+    manager.TabellenInsert("ModelStructed_Classification",["Hello World",Model])
     pass
 
 @app.route('/supervised/structured/regression')
 def structured_regression():
-    data, labels = ...
+    data, labels = manager.VonTabelleGebe("HauptTabelle",["DataArray","LabelArray"],"DataArray",["ProjectName"],["=="],["Hello World"])[0]
     #Tree model for regression
     Models = [RandomForestAutoRegr(data, labels), XGBoostAutoRegr(data, labels), DecisionTreeAutoRegr(data, labels)]
     Models.sort(key= lambda x: x.cost(data, labels))
     Model = Models[0]
-    save the model
+    manager.TabellenInsert("ModelStructed_Regression",["Hello World",Model])
     pass
 
 @app.route('/supervised/unstructured/classification')
 def unstructured_regression():
-    data, labels = ...
+    data, labels = manager.VonTabelleGebe("HauptTabelle",["DataArray","LabelArray"],"DataArray",["ProjectName"],["=="],["Hello World"])[0]
     #Linear or NN regression model
     Models = [PolynomialRegrAuto(data, labels), NeuralNetworkAutoRegr(data, labels)]
     Models.sort(key= lambda x: x.cost(data, labels))
     Model = Models[0]
-    save the model
+    manager.TabellenInsert("ModelUnstructed_Regression",["Hello World",Model])
     pass
 
 @app.route('/supervised/unstructured/regression')
 def unstructured_classification():
-    data, labels = ...
+    data, labels = manager.VonTabelleGebe("HauptTabelle",["DataArray","LabelArray"],"DataArray",["ProjectName"],["=="],["Hello World"])[0]
     #Linear or NN classification model
     Models = [LogisticAutoClass(data, labels), NeuralNetworkAutoClass(data, labels)]
     Models.sort(key= lambda x: x.cost(data, labels))
     Model = Models[0]
-    save the model
+    manager.TabellenInsert("ModelUnstructed_Classification",["Hello World",Model])
     pass
 
 @app.route('/unsupervised/processing')
@@ -79,32 +82,32 @@ def unsupervised_processing():
 
 @app.route('/unsupervised/outlier')
 def unsupervised_outliers():
-    data = ...
+    data = manager.VonTabelleGebe("HauptTabelle",["DataArray"],"DataArray",["ProjectName"],["=="],["Hello World"])[0]
     Fraktilwert = ...
     #Filtering out outliers
     Filter = outlier.outlier_filtering(Fraktilwert)
-    data = Filter.filter(data)
-    save the data
+    data_1 = Filter.filter(data)
+    manager.TabelleUpdaten("HauptTabelle",["DataArray"],[data_1],["ProjectName"],["=="],["Hello World"])
     pass
 
 @app.route('/unsupervised/cond')
 def unsupervised_cond():
     amt_dim = ...
-    data = ...
+    data = manager.VonTabelleGebe("HauptTabelle",["DataArray"],"DataArray",["ProjectName"],["=="],["Hello World"])[0]
     #Save data pca
     PCA_Model = PCA(amt_dim)
     data_cond = PCA_Model.pca(data)
-    save the data
+    manager.TabelleUpdaten("HauptTabelle",["DataArray"],[data_cond],["ProjectName"],["=="],["Hello World"])
     pass
 
 @app.route('/unsupervised/cluster')
 def unsupervised_cluster():
     amt_categories = ...
-    data = ...
+    data = manager.VonTabelleGebe("HauptTabelle",["DataArray"],"DataArray",["ProjectName"],["=="],["Hello World"])[0]
     #Save clusters of data
     Cluster_Model = KMeansClustering(amt_categories, data)
     classifications = Cluster_Model.get_labels(data)
-    save the data
+    manager.TabelleUpdaten("HauptTabelle",["DataArray"],[classifications],["ProjectName"],["=="],["Hello World"])
     pass
 
 @app.route('/unsupervised/imputation')
@@ -113,24 +116,41 @@ def unsupervised_imputation():
 
 @app.route('/unsupervised/imputation/mean')
 def unsupervised_imputation_mean():
-    data = ...
+    data = manager.VonTabelleGebe("HauptTabelle",["DataArray"],"DataArray",["ProjectName"],["=="],["Hello World"])[0]
     #Save data filled with mean values
-    data = autofill.mean_imputation(data)
-    Save the data
+    data_2 = autofill.mean_imputation(data)
+    manager.TabelleUpdaten("HauptTabelle",["DataArray"],[data_2],["ProjectName"],["=="],["Hello World"])
     pass
 
 @app.route('/unsupervised/imputation/kmeans')
 def unsupervised_imputation_kmeans():
-    data = ...
+    data = manager.VonTabelleGebe("HauptTabelle",["DataArray"],"DataArray",["ProjectName"],["=="],["Hello World"])[0]
     #Save data filled with kmeans values
-    data = autofill.k_nn_imputation(data)
-    Save the data
+    data_3 = autofill.k_nn_imputation(data)
+    manager.TabelleUpdaten("HauptTabelle",["DataArray"],[data_3],["ProjectName"],["=="],["Hello World"])
     pass
 
 @app.route('/existing')
 def predict_reconfigure_download():
-    OtpimModel = ... #Retrieve the model
-    data, labels = ... #New stuff to reconfigure
+    if manager.VonTabelleGebe("ModelStructured_Classification",["model"],"model",["ProjectName"],["=="],["Hello World"]) != []:
+        ModelStructured_Classification = VonTabelleGebe("ModelStructured_Classification",["model"],"model",["ProjectName"],["=="],["Hello World"])[0]
+    else:
+        ModelStructured_Classification = None
+    if manager.VonTabelleGebe("ModelStructured_Regression",["model"],"model",["ProjectName"],["=="],["Hello World"]) != []:
+        ModelStructured_Regression = VonTabelleGebe("ModelStructured_Regression",["model"],"model",["ProjectName"],["=="],["Hello World"])[0]
+    else:
+        ModelStructured_Regression = None
+    if manager.VonTabelleGebe("ModelUnstructured_Regression",["model"],"model",["ProjectName"],["=="],["Hello World"]) != []:
+        ModelUnstructured_Regression = VonTabelleGebe("ModelUnstructured_Regression",["model"],"model",["ProjectName"],["=="],["Hello World"])[0]
+    else:
+        ModelUnstructured_Regression = None
+    if manager.VonTabelleGebe("ModelUnstructured_Classification",["model"],"model",["ProjectName"],["=="],["Hello World"]) != []:
+        ModelUnstructured_Classification = VonTabelleGebe("ModelUnstructured_Classification",["model"],"model",["ProjectName"],["=="],["Hello World"])[0]
+    else:
+        ModelUnstructured_Classification = None
+    OtpimModel = ... #Retrieve the 
+    data, labels = manager.VonTabelleGebe("HauptTabelle",["DataArray","LabelArray"],"DataArray",["ProjectName"],["=="],["Hello World"])[0] #New stuff to reconfigure
+
     if OtpimModel.isinstance(RandomForestAutoClass) or OtpimModel.isinstance(XGBoostAutoClass) or OtpimModel.isinstance(DecisionTreeAutoClass):
         go to structured_classification
         pass
