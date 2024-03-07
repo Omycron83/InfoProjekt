@@ -27,47 +27,86 @@ manager.TabellenErstellen("ModelUnstructured_Classification",[["ProjectName",""]
 UPLOAD_FOLDER = 'UPLOAD_FOLDER'
 ALLOWED_EXTENSIONS = {'csv'}
 
+from flask import Flask, render_template, request, redirect
+
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@app.route('/',methode=['GET','POST'])
-def login():
-    if request.method == 'Post':
-        username = whatever we get Ig
-        return redirect(url_for(whatever we redirect to))
+@app.route('/', methods=['GET', 'POST'])
+def hello_world():  # put application's code here
+    if request.method == 'POST':
+        username = request.form['username']
+        print(username)
+        return redirect('/home')
     return render_template('index.html')
 
-@app.route('/create')
+
+@app.route('/home')
+def home():
+    return render_template('home.html', datasets=["airplane", "automobile", "bird", "cat"])
+
+
+@app.route('/download/<name>')
+def download(name):
+    print(name)
+    return redirect('/home')
+
+
+@app.route('/create', methods=['GET', 'POST'])
 def create():
+    if request.method == 'POST':
+        name = request.form['name']
+        print(name)
+        if 'preparation' in request.form and request.form['preparation'] == 'on':
+            return redirect('/preparation')
+        return redirect('/unsupervised')
     return render_template('create.html')
 
-@app.route('/prepare-data', methods=['GET', 'POST'])
-def prepare():
-    if request.method == 'Post':
-        Damian do shit
-    return render_template('prepare-data.html')
+
+@app.route('/preparation', methods=['GET', 'POST'])
+def prepare_data():
+    if request.method == 'POST':
+        check = lambda key: key in request.form and request.form[key] == 'on'
+        selected_typ = ''
+        for typ in ['condensation', 'clustering', 'imputation-mean', 'imputation-knn']:
+            if check(typ):
+                selected_typ = typ
+                break
+        print(selected_typ)
+        print(request.files)
+        if 'skip' in request.form and request.form['skip'] == 'on':
+            return redirect('/home')
+        return redirect('/unsupervised')
+    return render_template('preparation.html')
+
 
 @app.route('/unsupervised', methods=['GET', 'POST'])
 def unsupervised():
-    if request.method == 'Post':
-        Damian do shit
+    if request.method == 'POST':
+        structured = 'structured' in request.form and request.form['structured'] == 'on'
+        print(structured)
+        check = lambda key: key in request.form and request.form[key] == 'on'
+        selected_typ = ''
+        for typ in ['class', 'reg']:
+            if check(typ):
+                selected_typ = typ
+                break
+        print(selected_typ)
+        print(request.files['file'].filename)
+        return redirect('/home')
     return render_template('unsupervised.html')
-s
-@app.route('/prediction', methods=['GET', 'POST'])
-def prediction():
-    if request.method == 'Post':
-        Damian do shit
-    return render_template('prediction.html')
 
-@app.route('/download?name=<name>')
-def existing_download(name):
-    uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
-    return send_from_directory(uploads, name)
+
+@app.route('/predict/<name>', methods=['GET', 'POST'])
+def predict(name):
+    if request.method == 'POST':
+        print(request.files)
+        # DO DOWNLOAD
+        return redirect('/home')
+    return render_template('predict.html')
+
+
+if __name__ == '__main__':
+    app.run()
 
 # @app.route('/Upload-Data')
 # def upload_file():
