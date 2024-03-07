@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analysis Interface</title>
+</head>
+<body>
+
+    <div>
+        <h1>Welcome to the Data Analysis Interface</h1>
+
+        <form id="dataForm" action="#" method="post">
+            <label for="dataStatus">Are you working on a new or existing set of data?</label>
+            <div>
+                <button type="button" onclick="showOptions('new')">New</button>
+                <button type="button" onclick="showOptions('existing')">Existing</button>
+            </div>
+
+            <div id="newOptions" style="display: none;">
+                <label for="taskType">Select a task type:</label>
+                <div>
+                    <button type="button" onclick="showUnsupervisedOptions()">Unsupervised</button>
+                    <button type="button" onclick="showSupervisedOptions()">Supervised</button>
+                </div>
+            </div>
+
+            <div id="unsupervisedOptions" style="display: none;">
+                <label for="unsupervisedTask">Select an unsupervised task:</label>
+                <div>
+                    <button type="button" onclick="showUploadOption()">Clustering</button>
+                    <button type="button" onclick="showUploadOption()">Condensation</button>
+                    <button type="button" onclick="showImputationOptions()">Imputation</button>
+                </div>
+            </div>
+
+            <div id="imputationOptions" style="display: none;">
+                <label for="imputationMethod">Select an imputation method:</label>
+                <div>
+                    <button type="button" onclick="showUploadOption()">Mean</button>
+                    <button type="button" onclick="showUploadOption()">KNN</button>
+                </div>
+            </div>
+
+            <div id="supervisedOptions" style="display: none;">
+                <label for="prepareData">Do you want to prepare data?</label>
+                <div>
+                    <button type="button" onclick="showStructuredOptions()">Yes</button>
+                    <button type="button" onclick="showUploadOption()">No</button>
+                </div>
+            </div>
+
+            <div id="existingOptions" style="display: none;">
+                <label for="predictOrReconfigure">Predicting or reconfiguring?</label>
+                <div>
+                    <button type="button" onclick="showUploadOption()">Predicting</button>
+                    <button type="button" onclick="showUploadOption()">Reconfiguring</button>
+                </div>
+            </div>
+
+            <div id="structuredOptions" style="display: none;">
+                <label for="structured">Is the data structured?</label>
+                <div>
+                    <button type="button" onclick="showTaskOptions('Yes')">Yes</button>
+                    <button type="button" onclick="showTaskOptions('No')">No</button>
+                </div>
+            </div>
+
+            <div id="taskOptions" style="display: none;">
+                <label for="taskType">Select a task type:</label>
+                <div>
+                    <button type="button" onclick="showUploadOption()">Classification</button>
+                    <button type="button" onclick="showUploadOption()">Regression</button>
+                </div>
+            </div>
+
+            <div id="uploadOptions" style="display: none;">
+                <label for="uploadOption">Upload your data:</label>
+                <input type="file" id="uploadOption" name="uploadOption">
+                <button type="submit">Upload</button>
+            </div>
+
+            <script>
+                function showOptions(status) {
+                    var newOptions = document.getElementById("newOptions");
+                    var existingOptions = document.getElementById("existingOptions");
+
+                    if (status === 'new') {
+                        newOptions.style.display = "block";
+                        existingOptions.style.display = "none";
+                    } else {
+                        newOptions.style.display = "none";
+                        existingOptions.style.display = "block";
+                        showUploadOption();  // Display upload option for existing data
+                    }
+                }
+
+                function showUnsupervisedOptions() {
+                    var unsupervisedOptions = document.getElementById("unsupervisedOptions");
+                    unsupervisedOptions.style.display = "block";
+                    showUploadOption();
+                }
+
+                function showImputationOptions() {
+                    var imputationOptions = document.getElementById("imputationOptions");
+                    imputationOptions.style.display = "block";
+                    showUploadOption();
+                }
+
+                function showSupervisedOptions() {
+                    var supervisedOptions = document.getElementById("supervisedOptions");
+                    supervisedOptions.style.display = "block";
+                    showUploadOption();
+                }
+
+                function showStructuredOptions() {
+                    var structuredOptions = document.getElementById("structuredOptions");
+                    structuredOptions.style.display = "block";
+                    showUploadOption();
+                }
+
+                function showTaskOptions(answer) {
+                    var taskOptions = document.getElementById("taskOptions");
+                    taskOptions.style.display = "block";
+                    showUploadOption();
+                }
+
+                function showUploadOption() {
+                    var uploadOptions = document.getElementById("uploadOptions");
+                    uploadOptions.style.display = "block";
+                }
+            </script>
+        </form>
+    </div>
+
+</body>
+</html>
