@@ -4,55 +4,93 @@ from abc import ABC, abstractmethod
 #Basic frameworks for all of the base-models to inherit from 
 class MachineLearningModel(ABC):
     @abstractmethod
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def __init__(self, params, dim_features=None, dim_labels=None) -> None:
         pass
     @abstractmethod
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def train(self, features, labels):
         pass
     @abstractmethod
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def predict(self, features):
         pass
-
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def MSE(self, pred, Y):
         return np.sum((np.array(pred) - np.array(Y).reshape(np.array(pred).shape))**2) / (2 * np.array(pred).size)
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def Log(self, pred, Y):
         return np.sum(-pred * np.log2(Y + (Y == 0)*0.0001) - (1-pred) * np.log2(1 - Y + (Y == 1)*0.0001)) / pred.shape[0]
 
 #Basic framework for all of the optimizer-models to inherit from
 class OptimizerRegr(ABC):
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def __init__(self, features, labels):
         self.train_features = features
         self.train_labels = labels
         self.optim(features, labels)
-
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def train(self, features, labels):
         self.model.train(features, labels)
     
     @abstractmethod
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def optim(self, features, labels):
         self.train_features, self.train_labels = features, labels
-
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def pred(self, new_features):
         return self.model.predict(new_features)
-
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def cost(self, features, labels):
         return self.model.MSE(self.model.predict(features), labels)
 
 class OptimizerClass(ABC):
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def __init__(self, features, labels):
         self.train_features = features
         self.train_labels = labels
         self.optim(features, labels)
-
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def train(self, features, labels):
         self.model.train(features, labels)
     
     @abstractmethod
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def optim(self, features, labels):
         self.train_features, self.train_labels = features, labels
-
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def pred(self, new_features):
         return self.model.predict(new_features)
-
+    # nimmt ...
+    # gibt ... aus
+    # ergebniss ...
     def cost(self, features, labels):
         return self.model.Log(self.model.predict(features), labels)
