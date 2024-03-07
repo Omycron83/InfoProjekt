@@ -57,6 +57,11 @@ def prediction():
         Damian do shit
     return render_template('prediction.html')
 
+@app.route('/download?name=<name>')
+def existing_download(name):
+    uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+    return send_from_directory(uploads, name)
+
 # @app.route('/Upload-Data')
 # def upload_file():
 #     if request.method == 'POST':
