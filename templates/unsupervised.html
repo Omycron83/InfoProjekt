@@ -3,6 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            text-align: center;
+            background-color: #f0f5f9;
+            color: #333;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        button, input, label {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #3f577c;
+            color: #fff;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #32465a;
+        }
+
+        input {
+            padding: 8px;
+            border: 1px solid #95a7bb;
+            border-radius: 4px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #3f577c;
+        }
+
+        #uploadSection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #uploadSection input {
+            width: 60%;
+        }
+
+        #subButtonsSection, #subSubButtonsSection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #subButtonsSection button, #subSubButtonsSection button {
+            width: 45%;
+            background-color: #3f577c;
+            color: #fff;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        #subButtonsSection button:hover, #subSubButtonsSection button:hover {
+            background-color: #32465a;
+        }
+
+        #loadingScreen, #analysisResult {
+            margin-top: 20px;
+        }
+
+        #titleScreen, #functionalPage, #loadingPage, #resultPage {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #titleScreen h1 {
+            color: #3f577c;
+        }
+
+        #titleScreen p {
+            color: #333;
+        }
+
+        #functionalPage h2, #loadingPage h2, #resultPage h2 {
+            color: #3f577c;
+        }
+
+        #resultPage p {
+            color: #555;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .hide-button {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 <form method="post" enctype=multipart/form-data>
@@ -21,7 +131,9 @@
         Reg
     </label>
     <br>
-    <input type="file" name="file">
+    <input type="file" name="file1">
+    <br>
+    <input type="file" name="file2">
     <br>
     <button type="submit">Submit</button>
     <script>
