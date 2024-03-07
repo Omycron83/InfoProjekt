@@ -1,0 +1,20 @@
+/
+Get -> template: index.html
+
+/download?name=<name>
+Get -> Download Dataset
+
+/create
+Get -> template: create.html
+
+/prepare-data
+Get -> template: prepare-data.html
+Post -> Informationen folgen (u.a. Datei, Typ, Redirect target)
+
+/unsupervised
+Get -> template: unsupervised.html
+Post -> Informationen folgen (u.a. Datei, info) -> redirect to /
+
+/prediction
+Get -> template: prediction.html
+Post -> informationen folgen (u.a. Datei)
