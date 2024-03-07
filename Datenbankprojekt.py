@@ -90,7 +90,6 @@ class Datenbanken:
     def TabellenInsert(self,name,data):
         length = len(data)
         string = "INSERT INTO "+name+" VALUES"
-        print(data)
         self.__cursor.execute(string+"("+(length-1)*"?, "+" ?"+")",data)
         self.__connection.commit()
     #Lösche aus einer angebebene Tabelle alle zeilen mit den angegeben bedingungen. (Bedingungscollums, -zeichen, bedingungen sind alles listen mit dem i'ten
