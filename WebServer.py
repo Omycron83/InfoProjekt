@@ -35,6 +35,13 @@ def allowed_file(filename):
 def home():
     return render_template('index.html')
 
+@app.route('/login',methode=['GET','POST'])
+def login():
+    if request.method == 'Post':
+        username = whatever we get Ig
+        return redirect(url_for(whatever we redirect to))
+    return render_template('login.html')
+
 @app.route('/create')
 def create():
     return render_template('create.html')
@@ -50,7 +57,7 @@ def unsupervised():
     if request.method == 'Post':
         Damian do shit
     return render_template('unsupervised.html')
-
+s
 @app.route('/prediction', methods=['GET', 'POST'])
 def prediction():
     if request.method == 'Post':
