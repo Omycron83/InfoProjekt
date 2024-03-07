@@ -39,8 +39,12 @@ def allowed_file(filename):
 def login():
     if request.method == 'Post':
         username = whatever we get Ig
-        return redirect(url_for(whatever we redirect to))
+        return redirect(url_for('home'))
     return render_template('index.html')
+
+@app.route('/home')
+def home():
+    return render_template('home.html')
 
 @app.route('/create')
 def create():

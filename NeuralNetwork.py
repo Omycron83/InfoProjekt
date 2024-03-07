@@ -76,7 +76,7 @@ class NeuralNetworkClass(supervised.MachineLearningModel):
     # ergebniss ...
     def predict(self, features):
         features_pred = (features - self.norm[0]) / self.norm[1]
-        self.model.forward_propagation(features_pred, np.ones((features_pred.shape[0], self.model.len_output)), NN.logistic_cost)
+        self.model.forward_propagatioen(features_pred, np.ones((features_pred.shape[0], self.model.len_output)), NN.logistic_cost)
         return self.model.output_layer()
     
 class NeuralNetworkAutoClass(supervised.OptimizerClass):
