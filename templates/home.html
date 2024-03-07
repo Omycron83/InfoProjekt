@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/create">New</a>
+<br>
+{% for name in datasets %}
+    {{ name }}
+    <a href="/predict/{{ name }}">Predict</a>
+    <a href="/download/{{ name }}">Download</a>
+    <br>
+{% endfor %}
+</body>
+</html>

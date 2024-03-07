@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="post" id="form" enctype=multipart/form-data>
+    <label>
+        <input type="radio" name="condensation">
+        Condensation
+    </label>
+    <br>
+    <label>
+        <input type="radio" name="clustering">
+        Clustering
+    </label>
+    <br>
+    <label>
+        <input type="radio" name="imputation-mean">
+        Imputation Mean
+    </label>
+    <label>
+        <input type="radio" name="imputation-knn">
+        Imputation Knn
+    </label>
+    <br>
+    <label>
+        <input type="checkbox" name="skip">
+        Skip
+    </label>
+    <input type="file" name="file">
+    <br>
+    <button type="submit">Submit</button>
+    <script>
+        const buttons = document.getElementsByTagName('input');
+        const form = document.getElementById('form');
+        for (let i = 0; i < buttons.length; i++) {
+            if (buttons[i].type === 'radio') {
+                buttons[i].addEventListener('click', ev => {
+                    for (let j = 0; j < buttons.length; j++) {
+                        if (i !== j && buttons[j].type === 'radio') {
+                            buttons[j].checked = false
+                        }
+                    }
+                })
+            }
+        }
+    </script>
+</form>
+</body>
+</html>

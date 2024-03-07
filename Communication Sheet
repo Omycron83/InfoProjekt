@@ -1,6 +1,9 @@
 /
 Get -> template: index.html
 
+/home
+Get -> template: home.html
+
 /download?name=<name>
 Get -> Download Dataset
 

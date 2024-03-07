@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="post" enctype=multipart/form-data>
+    <label>
+        <input type="checkbox" name="structured">
+        Structured?
+    </label>
+    <br>
+    <label>
+        <input type="radio" name="class">
+        Class
+    </label>
+    <br>
+    <label>
+        <input type="radio" name="reg">
+        Reg
+    </label>
+    <br>
+    <input type="file" name="file">
+    <br>
+    <button type="submit">Submit</button>
+    <script>
+        const buttons = document.getElementsByTagName('input');
+        const form = document.getElementById('form');
+        for (let i = 0; i < buttons.length; i++) {
+            if (buttons[i].type === 'radio') {
+                buttons[i].addEventListener('click', ev => {
+                    for (let j = 0; j < buttons.length; j++) {
+                        if (i !== j && buttons[j].type === 'radio') {
+                            buttons[j].checked = false
+                        }
+                    }
+                })
+            }
+        }
+    </script>
+</form>
+</body>
+</html>
