@@ -34,8 +34,12 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/')
-def home():
+
+@app.route('/',methode=['GET','POST'])
+def login():
+    if request.method == 'Post':
+        username = whatever we get Ig
+        return redirect(url_for(whatever we redirect to))
     return render_template('index.html')
 
 @app.route('/create')
@@ -53,12 +57,17 @@ def unsupervised():
     if request.method == 'Post':
         Damian do shit
     return render_template('unsupervised.html')
-
+s
 @app.route('/prediction', methods=['GET', 'POST'])
 def prediction():
     if request.method == 'Post':
         Damian do shit
     return render_template('prediction.html')
+
+@app.route('/download?name=<name>')
+def existing_download(name):
+    uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+    return send_from_directory(uploads, name)
 
 # @app.route('/Upload-Data')
 # def upload_file():
@@ -260,10 +269,6 @@ def prediction():
 # def existing_configure():
 #     pass
 
-@app.route('/download?name=<name>')
-def existing_download(name):
-    uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
-    return send_from_directory(uploads, name)
 
 # @app.route('/result', methods=['POST'])
 # def result():
