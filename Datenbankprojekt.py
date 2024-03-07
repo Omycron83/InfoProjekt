@@ -90,7 +90,6 @@ class Datenbanken:
     def TabellenInsert(self,name,data):
         length = len(data)
         string = "INSERT INTO "+name+" VALUES"
-        print(data)
         self.__cursor.execute(string+"("+(length-1)*"?, "+" ?"+")",data)
         self.__connection.commit()
     #Lösche aus einer angebebene Tabelle alle zeilen mit den angegeben bedingungen. (Bedingungscollums, -zeichen, bedingungen sind alles listen mit dem i'ten
@@ -129,7 +128,7 @@ class Datenbanken:
         string = string[:-2]
         string = string+"FROM "+name
         string = string+" ORDER BY "+sortierung
-        return(self.__cursor.execute(string,bedingungen).fetchall())
+        return(self.__cursor.execute(string).fetchall())
     #Gebe die angegeben collums aller zeilen aus die die bedingungen erfüllen
     def VonTabelleGebe(self,name,collums,sortierung,bedinungscollums,bedingungszeichen,bedingungen):
         string = "SELECT "
