@@ -11,7 +11,10 @@ from PCA import PCA
 from RandomForests import RandomForestAutoClass, RandomForestAutoRegr
 from XGBoost import XGBoostAutoClass, XGBoostAutoRegr
 import os
+
+#Setting up the application
 app = Flask(__name__)
+#
 manager = Datenbankprojekt.Datenbanken("Databank-Manager")
 manager.DatenbankErstellen("Datenbank")
 manager.TabellenErstellen("HauptTabelle",[["ProjectName",""],["DataArray","array"],["LabelArray","array"]])
@@ -19,7 +22,7 @@ manager.TabellenErstellen("ModelStructured_Classification",[["ProjectName",""],[
 manager.TabellenErstellen("ModelStructured_Regression",[["ProjectName",""],["model","Damianstuff"]])
 manager.TabellenErstellen("ModelUnstructured_Regression",[["ProjectName",""],["model","Damianstuff"]])
 manager.TabellenErstellen("ModelUnstructured_Classification",[["ProjectName",""],["model","Damianstuff"]])
-#Decision to either decide on new or existing
+
 
 UPLOAD_FOLDER = 'UPLOAD_FOLDER'
 ALLOWED_EXTENSIONS = {'csv'}
@@ -31,8 +34,12 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/')
-def home():
+
+@app.route('/',methode=['GET','POST'])
+def login():
+    if request.method == 'Post':
+        username = whatever we get Ig
+        return redirect(url_for(whatever we redirect to))
     return render_template('index.html')
 
 @app.route('/create')
@@ -50,7 +57,7 @@ def unsupervised():
     if request.method == 'Post':
         Damian do shit
     return render_template('unsupervised.html')
-
+s
 @app.route('/prediction', methods=['GET', 'POST'])
 def prediction():
     if request.method == 'Post':
