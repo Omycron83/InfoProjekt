@@ -1,20 +1,20 @@
 /
-Pull -> template: index.html
+Get -> template: index.html
 
 /download?name=<name>
-Pull -> Download Dataset
+Get -> Download Dataset
 
 /create
-Pull -> template: create.html
+Get -> template: create.html
 
 /prepare-data
-Pull -> template: prepare-data.html
+Get -> template: prepare-data.html
 Post -> Informationen folgen (u.a. Datei, Typ, Redirect target)
 
 /unsupervised
-Pull -> template: unsupervised.html
+Get -> template: unsupervised.html
 Post -> Informationen folgen (u.a. Datei, info) -> redirect to /
 
 /prediction
-Pull -> template: prediction.html
+Get -> template: prediction.html
 Post -> informationen folgen (u.a. Datei)
