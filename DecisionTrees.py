@@ -17,7 +17,7 @@ class DecisionTreeRegr(supervised.MachineLearningModel):
 class DecisionTreeAutoRegr(supervised.OptimizerRegr):
     def optim(self, features, labels):
         super().optim(features, labels)
-        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters(parameter_ranges=[Integer(1, 50), Integer(2, 20), Integer(1, 16), Real(0.1, 1.0)], Model=DecisionTreeRegr, is_classifier=False, n_calls=100, features=features, labels=labels)
+        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters(parameter_ranges=[Integer(1, 50), Integer(2, 20), Integer(1, 16), Real(0.1, 1.0)], Model=DecisionTreeRegr, is_classifier=False, n_calls=20, features=features, labels=labels)
         self.model = DecisionTreeRegr(self.opt_hyperparams)
         self.train(features, labels)
 
@@ -34,7 +34,7 @@ class DecisionTreeClass(supervised.MachineLearningModel):
 class DecisionTreeAutoClass(supervised.OptimizerRegr):
     def optim(self, features, labels):
         super().optim(features, labels)
-        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 50), Integer(2, 20), Integer(1, 16), Real(0.1, 1.0)], DecisionTreeClass, is_classifier=True, n_calls=100, features=features, labels=labels)
+        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 50), Integer(2, 20), Integer(1, 16), Real(0.1, 1.0)], DecisionTreeClass, is_classifier=True, n_calls=20, features=features, labels=labels)
         self.model = DecisionTreeClass(self.opt_hyperparams)
         self.train(features, labels)
 

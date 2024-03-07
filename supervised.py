@@ -13,11 +13,9 @@ class MachineLearningModel(ABC):
     def predict(self, features):
         pass
 
-    def MSE(self, features, labels):
-        pred, Y = self.predict(features), labels
+    def MSE(self, pred, Y):
         return np.sum((np.array(pred) - np.array(Y).reshape(np.array(pred).shape))**2) / (2 * np.array(pred).size)
-    def Log(self, features, labels):
-        pred, Y = self.predict(features), labels
+    def Log(self, pred, Y):
         return np.sum(-pred * np.log2(Y + (Y == 0)*0.0001) - (1-pred) * np.log2(1 - Y + (Y == 1)*0.0001)) / pred.shape[0]
 
 #Basic framework for all of the optimizer-models to inherit from
@@ -38,7 +36,7 @@ class OptimizerRegr(ABC):
         return self.model.predict(new_features)
 
     def cost(self, features, labels):
-        return self.model.MSE(features, labels)
+        return self.model.MSE(self.model.predict(features), labels)
 
 class OptimizerClass(ABC):
     def __init__(self, features, labels):
@@ -57,4 +55,4 @@ class OptimizerClass(ABC):
         return self.model.predict(new_features)
 
     def cost(self, features, labels):
-        return self.model.Log(features, labels)
+        return self.model.Log(self.model.predict(features), labels)

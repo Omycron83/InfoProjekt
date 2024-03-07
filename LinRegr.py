@@ -33,8 +33,8 @@ class linear_regression:
         features_bias = np.hstack((features, np.ones((features.shape[0], 1))))
         return features_bias @ self.theta
     
-    def MSE(self, features, labels):
-        return np.sum(np.square(self.predict(features) - labels)) / (2 * np.array(labels).size)
+    def MSE(self, pred, labels):
+        return np.sum(np.square(pred - labels)) / (2 * np.array(labels).size)
 
 
 #In polynomial regression, it is usually good to normalize the data
@@ -73,18 +73,16 @@ class PolynomialRegr(linear_regression):
         return super().predict(features)
 
 class PolynomialRegrAuto(supervised.OptimizerRegr):
-    def optimize_polyregr(self, features, labels):
+    def optim(self, features, labels):
         super().optim(features, labels)
-        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 20), Real(0, 40)], PolynomialRegr, self.cost, n_calls=100, features=features, labels=labels)
+        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 20), Real(0, 40)], PolynomialRegr, is_classifier=False, n_calls=10, features=features, labels=labels)
         self.model = PolynomialRegr(self.opt_hyperparams, dim_features = features.shape[1], dim_labels = labels.shape[1])
         self.train(features, labels)
-        
+
 def unit_test():
-    f, l = np.zeros(5, 3), np.zeros(5, 1)
-    _class = DecisionTreeAutoClass(f, l)
+    f, l = np.zeros((5, 3)), np.zeros((5, 1))
+    _class = PolynomialRegrAuto(f, l)
     print(_class.pred(f), _class.cost(f, l))
-    regr = DecisionTreeAutoRegr(f, l)
-    print(regr.pred(f), _class.cost(f, l))
 
 if __name__ == '__main__':
     unit_test()

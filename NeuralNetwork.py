@@ -23,17 +23,17 @@ class NeuralNetworkRegr(supervised.MachineLearningModel):
         self.norm[0], self.norm[1] = np.mean(features, axis = 0), std
         features_train = (features - self.norm[0]) / self.norm[1]
         for i in range(300):
-            self.model.stochastic_gradient_descent(self.alpha, self._lambda, features_train, labels, NN.MSE, self.dropout)
+            self.model.stochastic_gradient_descent(self.alpha, self._lambda, features_train, labels, NN.MSE, [self.dropout])
     
     def predict(self, features):
         features_pred = (features - self.norm[0]) / self.norm[1]
-        self.model.forward_propagation(features_pred, np.ones((features_pred.shape[0], self.model.len_output)))
+        self.model.forward_propagation(features_pred, np.ones((features_pred.shape[0], self.model.len_output)), self.MSE)
         return self.model.output_layer()
     
-class NeuralNetworkRegr(supervised.OptimizerRegr):
+class NeuralNetworkAutoRegr(supervised.OptimizerRegr):
     def optim(self, features, labels):
         super().optim(features, labels)
-        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(10, 1024), Integer(0, 1024), Real(0.0000001, 0.1), Real(0.0, 10), Real(0, 1), Integer(1, 100)], NeuralNetworkRegr, self.cost, n_calls=100, features=features, labels=labels)
+        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(10, 1024), Integer(0, 1024), Real(0.0000001, 0.1), Real(0.0, 10), Real(0, 1), Integer(1, 100)], NeuralNetworkRegr, is_classifier=False, n_calls=10, features=features, labels=labels)
         self.model = NeuralNetworkRegr(self.opt_hyperparams, dim_features = features.shape[1], dim_labels = labels.shape[1])
         self.train(features, labels)
 
@@ -54,26 +54,26 @@ class NeuralNetworkClass(supervised.MachineLearningModel):
         std[std == 0] = 0.001
         self.norm[0], self.norm[1] = np.mean(features, axis = 0), std
         features_train = (features - self.norm[0]) / self.norm[1]
-        for i in range(300):
-            self.model.stochastic_gradient_descent(self.alpha, self._lambda, features_train, labels, NN.logistic_cost, self.dropout)
+        for i in range(50):
+            self.model.stochastic_gradient_descent(self.alpha, self._lambda, features_train, labels, NN.logistic_cost, [self.dropout])
     
     def predict(self, features):
         features_pred = (features - self.norm[0]) / self.norm[1]
-        self.model.forward_propagation(features_pred, np.ones((features_pred.shape[0], self.model.len_output)))
+        self.model.forward_propagation(features_pred, np.ones((features_pred.shape[0], self.model.len_output)), NN.logistic_cost)
         return self.model.output_layer()
     
-class NeuralNetworkClass(supervised.OptimizerClass):
+class NeuralNetworkAutoClass(supervised.OptimizerClass):
     def optim(self, features, labels):
         super().optim(features, labels)
-        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(10, 1024), Integer(0, 1024), Real(0.0000001, 0.1), Real(0.0, 10), Real(0, 1), Integer(1, 100)], NeuralNetworkClass, self.cost, n_calls=100, features=features, labels=labels)
+        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(10, 1024), Integer(0, 1024), Real(0.0000001, 0.1), Real(0.0, 10), Real(0, 1), Integer(1, 100)], NeuralNetworkClass, is_classifier=True, n_calls=10, features=features, labels=labels)
         self.model = NeuralNetworkClass(self.opt_hyperparams, dim_features = features.shape[1], dim_labels = labels.shape[1])
         self.train(features, labels)
 
 def unit_test():
-    f, l = np.zeros(5, 3), np.zeros(5, 1)
-    _class = DecisionTreeAutoClass(f, l)
+    f, l = np.zeros((5, 3)), np.zeros((5, 1))
+    _class = NeuralNetworkAutoClass(f, l)
     print(_class.pred(f), _class.cost(f, l))
-    regr = DecisionTreeAutoRegr(f, l)
+    regr = NeuralNetworkAutoRegr(f, l)
     print(regr.pred(f), _class.cost(f, l))
 
 if __name__ == '__main__':

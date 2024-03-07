@@ -24,7 +24,7 @@ class XGBoostRegr(supervised.MachineLearningModel):
 class XGBoostAutoRegr(supervised.OptimizerRegr):
     def optim(self, features, labels):
         super().optim(features, labels)
-        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 8192), Real(0, 0.9999), Integer(1, 128), Real(0.0001, 0.1), Real(0, 20)], XGBoostRegr, MSE, n_calls=100, features=features, labels=labels)
+        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Real(0, 20), Real(0.01, 0.5), Integer(3, 10), Integer(100, 1100), Real(0.5, 1), Integer(1, 10), Real(0, 5), Real(0, 5)], XGBoostRegr, is_classifier=False, n_calls=20, features=features, labels=labels)
         self.model = XGBoostRegr(self.opt_hyperparams)
         self.train(features, labels)
 
@@ -48,15 +48,15 @@ class XGBoostClass(supervised.MachineLearningModel):
 class XGBoostAutoClass(supervised.OptimizerClass):
     def optim(self, features, labels):
         super().optim(features, labels)
-        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Integer(1, 8192), Real(0, 0.9999), Integer(1, 128), Real(0.0001, 0.1), Real(0, 20)], XGBoostRegr, MSE, n_calls=100, features=features, labels=labels)
+        self.opt_hyperparams = hyperparmeter_optimization.find_opt_hyperparameters([Real(0, 20), Real(0.01, 0.5), Integer(3, 10), Integer(100, 1100), Real(0.5, 1), Integer(1, 10), Real(0, 5), Real(0, 5)], XGBoostRegr, is_classifier=True, n_calls=20, features=features, labels=labels)
         self.model = XGBoostRegr(self.opt_hyperparams)
         self.train(features, labels)
 
 def unit_test():
-    f, l = np.zeros(5, 3), np.zeros(5, 1)
-    _class = DecisionTreeAutoClass(f, l)
+    f, l = np.zeros((20, 3)), np.zeros((20, 1))
+    _class = XGBoostAutoClass(f, l)
     print(_class.pred(f), _class.cost(f, l))
-    regr = DecisionTreeAutoRegr(f, l)
+    regr = XGBoostAutoRegr(f, l)
     print(regr.pred(f), _class.cost(f, l))
 
 if __name__ == '__main__':

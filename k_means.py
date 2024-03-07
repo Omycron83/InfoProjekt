@@ -13,6 +13,9 @@ class KMeansClustering:
         labels = np.argmin(distances, axis=1)
         return labels
 
+    def get_nearest_category(self, data):
+        return self.means[self.get_labels(data)]
+
     def get_means(self, data, iterations = 200):
         for i in range(iterations):
             labels = self.get_labels(data)
@@ -21,13 +24,12 @@ class KMeansClustering:
                 break
             else:
                 self.means = new_means
-                
+
 def unit_test():
-    f, l = np.zeros(5, 3), np.zeros(5, 1)
-    _class = DecisionTreeAutoClass(f, l)
-    print(_class.pred(f), _class.cost(f, l))
-    regr = DecisionTreeAutoRegr(f, l)
-    print(regr.pred(f), _class.cost(f, l))
+    z = np.random.rand(40, 40)
+    g = KMeansClustering(20, z)
+    x = g.get_labels(np.random.rand(40, 40))
+    print(x)
 
 if __name__ == '__main__':
     unit_test()

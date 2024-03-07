@@ -42,4 +42,5 @@ def find_opt_hyperparameters(parameter_ranges, Model, is_classifier, n_calls, fe
             cost = model.Log
         return k_fold_cross_val(5, features, labels, train_func, pred_func, cost)
     np.int = int
-    return gp_minimize(model_eval, parameter_ranges, n_calls = n_calls)
+    opt = gp_minimize(model_eval, parameter_ranges, n_calls = n_calls)
+    return opt.x
